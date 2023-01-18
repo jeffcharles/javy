@@ -52,7 +52,7 @@ jobs:
           asset_content_type: application/gzip
 
       - name: Generate quickjs_provider hash
-        run: sha256sum javy-quickjs_provider-${{ github.event.release.tag_name }}.wasm.gz | awk '{ print $1 }' > javy-quickjs_provider-${{ github.event.release.tag_name }}.wasm.gz
+        run: shasum -a 256 javy-quickjs_provider-${{ github.event.release.tag_name }}.wasm.gz | awk '{ print $1 }' > javy-quickjs_provider-${{ github.event.release.tag_name }}.wasm.gz
 
       - name: Upload asset hash to artifacts
         uses: actions/upload-artifact@v3
