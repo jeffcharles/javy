@@ -32,6 +32,44 @@ jobs:
           name: engine
           path: target/wasm32-wasi/release/javy_core.wasm
 
+      - name: Archive quickjs_provider
+        run: gzip -k -f target/release/javy_quickjs_provider.wasm && mv target/release/javy_quickjs_provider.wasm.gz javy-quickjs_provider-${{ github.event.release.tag_name }}.wasm.gz
+
+      - name: Upload quickjs_provider to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: javy-quickjs_provider-${{ github.event.release.tag_name }}.wasm.gz
+          path: javy-quickjs_provider-${{ github.event.release.tag_name }}.wasm.gz
+
+      - name: Upload quickjs_provider to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./javy-quickjs_provider-${{ github.event.release.tag_name }}.wasm.gz
+          asset_name: javy-quickjs_provider-${{ github.event.release.tag_name }}.wasm.gz
+          asset_content_type: application/gzip
+
+      - name: Generate quickjs_provider hash
+        run: sha256sum javy-quickjs_provider-${{ github.event.release.tag_name }}.wasm.gz | awk '{ print $1 }' > javy-quickjs_provider-${{ github.event.release.tag_name }}.wasm.gz
+
+      - name: Upload asset hash to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: javy-quickjs_provider-${{ github.event.release.tag_name }}.wasm.gz
+          path: javy-quickjs_provider-${{ github.event.release.tag_name }}.wasm.gz
+
+      - name: Upload asset hash to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./javy-quickjs_provider-${{ github.event.release.tag_name }}.wasm.gz
+          asset_name: javy-quickjs_provider-${{ github.event.release.tag_name }}.wasm.gz
+          asset_content_type: plain/text
+
   compile_cli:
     name: Compile CLI
     needs: compile_core
