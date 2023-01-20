@@ -12,16 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: default
-          toolchain: stable
-          target: wasm32-wasi
-          default: true
-
       - name: Install wasi-sdk
         run: make download-wasi-sdk
+
+      - name: Install wizer
+        run: cargo install wizer --all-features
 
       - name: Make core
         run: make core
@@ -32,16 +27,22 @@ jobs:
           name: engine
           path: target/wasm32-wasi/release/javy_core.wasm
 
+      - name: Upload quickjs_provider to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: provider
+          path: target/wasm32-wasi/release/javy_quickjs_provider.wasm
+
       - name: Archive quickjs_provider
         run: gzip -k -f target/release/javy_quickjs_provider.wasm && mv target/release/javy_quickjs_provider.wasm.gz javy-quickjs_provider-${{ github.event.release.tag_name }}.wasm.gz
 
-      - name: Upload quickjs_provider to artifacts
+      - name: Upload archived quickjs_provider to artifacts
         uses: actions/upload-artifact@v3
         with:
           name: javy-quickjs_provider-${{ github.event.release.tag_name }}.wasm.gz
           path: javy-quickjs_provider-${{ github.event.release.tag_name }}.wasm.gz
 
-      - name: Upload quickjs_provider to release
+      - name: Upload archived quickjs_provider to release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -51,7 +52,7 @@ jobs:
           asset_name: javy-quickjs_provider-${{ github.event.release.tag_name }}.wasm.gz
           asset_content_type: application/gzip
 
-      - name: Generate quickjs_provider hash
+      - name: Generate archived quickjs_provider hash
         run: shasum -a 256 javy-quickjs_provider-${{ github.event.release.tag_name }}.wasm.gz | awk '{ print $1 }' > javy-quickjs_provider-${{ github.event.release.tag_name }}.wasm.gz
 
       - name: Upload asset hash to artifacts
@@ -101,16 +102,14 @@ jobs:
           name: engine
           path: crates/cli/
 
+      - uses: actions/download-artifact@v3
+        with:
+          name: provider
+          path: crates/cli/
+
       - name: ls
         run: ls -R
         working-directory: crates/cli/
-
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: default
-          toolchain: 1.53.0
-          default: true
 
       - name: Build CLI ${{ matrix.os }}
         env:
