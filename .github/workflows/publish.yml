@@ -62,20 +62,18 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: engine
-          path: crates/cli/
+          path: target/wasm32-wasi/release/javy_core.wasm
 
       - uses: actions/download-artifact@v3
         with:
           name: provider
-          path: crates/cli/
+          path: target/wasm32-wasi/release/javy_quickjs_provider.wasm
 
       - name: ls
         run: ls -R
         working-directory: crates/cli/
 
       - name: Build CLI ${{ matrix.os }}
-        env:
-          JAVY_ENGINE_PATH: javy_core.wasm
         run: cargo build --release --package javy
 
       - name: Archive assets
