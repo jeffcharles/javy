@@ -86,14 +86,9 @@ jobs:
           path: ${{ matrix.asset_name }}.gz
 
       - name: Upload assets to release
-        uses: actions/upload-release-asset@v1
+        run: gh release upload ${{ github.event.release.upload_url }} ${{ matrix.asset_name }}.gz --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./${{ matrix.asset_name }}.gz
-          asset_name: ${{ matrix.asset_name }}.gz
-          asset_content_type: application/gzip
 
       - name: Generate asset hash
         run: ${{ matrix.shasum_cmd }} ${{ matrix.asset_name }}.gz | awk '{ print $1 }' > ${{ matrix.asset_name }}.gz.sha256
