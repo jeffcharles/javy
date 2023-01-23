@@ -62,12 +62,12 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: engine
-          path: target/wasm32-wasi/release/javy_core.wasm
+          path: target/wasm32-wasi/release/
 
       - uses: actions/download-artifact@v3
         with:
           name: provider
-          path: target/wasm32-wasi/release/javy_quickjs_provider.wasm
+          path: target/wasm32-wasi/release/
 
       - name: ls
         run: ls -R
