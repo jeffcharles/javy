@@ -86,7 +86,7 @@ jobs:
           path: ${{ matrix.asset_name }}.gz
 
       - name: Upload assets to release
-        run: gh release upload ${{ github.event.release.upload_url }} ${{ matrix.asset_name }}.gz --clobber
+        run: gh release upload ${{ github.event.release.tag_name }} ${{ matrix.asset_name }}.gz --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
