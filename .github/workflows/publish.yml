@@ -41,7 +41,7 @@ jobs:
           path: target/wasm32-wasi/release/javy_quickjs_provider.wasm
 
       - name: Archive wizened quickjs_provider
-        run: gzip -k -f target/wasm32-wasi/release/javy_quickjs_provider_wizened.wasm && mv target/release/javy_quickjs_provider_wizened.wasm.gz javy-quickjs_provider.wasm.gz
+        run: gzip -k -f target/wasm32-wasi/release/javy_quickjs_provider_wizened.wasm && mv target/wasm32-wasi/release/javy_quickjs_provider_wizened.wasm.gz javy-quickjs_provider.wasm.gz
 
       - name: Upload archived quickjs_provider to artifacts
         uses: actions/upload-artifact@v3
