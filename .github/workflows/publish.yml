@@ -97,7 +97,7 @@ jobs:
       - name: Upload assets to release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload ${{ github.event.release.tag }} ${{ matrix.asset_name }}.gz
+        run: gh release upload ${{ github.event.release.tag_name }} ${{ matrix.asset_name }}.gz
 
       - name: Generate asset hash
         run: ${{ matrix.shasum_cmd }} ${{ matrix.asset_name }}.gz | awk '{ print $1 }' > ${{ matrix.asset_name }}.gz.sha256
@@ -111,4 +111,4 @@ jobs:
       - name: Upload asset hash to release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload ${{ github.event.release.tag }} ${{ matrix.asset_name }}.gz.sha256
+        run: gh release upload ${{ github.event.release.tag_name }} ${{ matrix.asset_name }}.gz.sha256
