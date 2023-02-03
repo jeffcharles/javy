@@ -55,7 +55,7 @@ jobs:
           path: javy-quickjs_provider.wasm.gz
 
       - name: Upload archived quickjs_provider to release
-        if: ${{ github.event_name == "release" }}
+        if: github.event_name == 'release'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -75,7 +75,7 @@ jobs:
           path: javy-quickjs_provider.wasm.gz.sha256
 
       - name: Upload asset hash to release
-        if: ${{ github.event_name == "release" }}
+        if: github.event_name == 'release'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -147,7 +147,7 @@ jobs:
           path: ${{ matrix.asset_name }}.gz
 
       - name: Upload assets to release
-        if: ${{ github.event_name == "release" }}
+        if: github.event_name == 'release'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release upload ${{ github.event.release.tag_name }} ${{ matrix.asset_name }}.gz
@@ -162,7 +162,7 @@ jobs:
           path: ${{ matrix.asset_name }}.gz.sha256
 
       - name: Upload asset hash to release
-        if: ${{ github.event_name == "release" }}
+        if: github.event_name == 'release'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release upload ${{ github.event.release.tag_name }} ${{ matrix.asset_name }}.gz.sha256
