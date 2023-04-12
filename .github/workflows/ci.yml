@@ -51,11 +51,8 @@ jobs:
       - name: Install wasi-sdk
         run: make download-wasi-sdk
 
-      - name: Tests
-        run: make tests
+      - name: Parallel make
+        run: make -j fmt check-bench test-quickjs-wasm-rs test-core test-cli
 
-      - name: Check benchmarks
-        run: make check-bench
-
-      - name: Lint
-        run: make fmt
+      - name: WPT tests
+        run: make test-wpt
