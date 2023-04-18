@@ -33,6 +33,9 @@ jobs:
             ${{ runner.os }}-cargo-target-${{ hashFiles('Cargo.toml') }}
             ${{ runner.os }}-cargo-target
 
+      - name: Check Rust version
+        run: rustc --version
+
       - name: Install wasmtime-cli
         env:
           WASMTIME_VERSION: 0.34.1
