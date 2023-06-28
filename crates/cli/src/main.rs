@@ -75,7 +75,7 @@ fn create_statically_linked_module(opts: &CompileCommandOpts, exports: Vec<Strin
 
         // The subprocess should have written some Wasm so we can refine it now.
         let wizened_wasm = fs::read(&opts.output)?;
-        static_generator::refine(wizened_wasm, &js, exports)?
+        static_generator::refine(wizened_wasm, &js, exports, &opts.output)?
     } else {
         static_generator::generate()?
     };

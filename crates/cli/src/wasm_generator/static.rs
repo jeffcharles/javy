@@ -1,8 +1,11 @@
 use std::collections::HashMap;
 
+use std::{fs, path::Path};
+
 use anyhow::{anyhow, Result};
-use binaryen::{CodegenConfig, Module};
 use walrus::{DataKind, ExportItem, FunctionBuilder, FunctionId, MemoryId, ValType};
+// use binaryen::{CodegenConfig, Module};
+use wasm_opt::OptimizationOptions;
 use wizer::Wizer;
 
 use crate::js::JS;
@@ -26,7 +29,7 @@ pub fn generate() -> Result<Vec<u8>> {
 /// Takes Wasm created by `Generator` and makes additional changes.
 ///
 /// This is intended to be run in the parent process after generating the Wasm.
-pub fn refine(wasm: Vec<u8>, js: &JS, exports: Vec<String>) -> Result<Vec<u8>> {
+pub fn refine(wasm: Vec<u8>, js: &JS, exports: Vec<String>, output: &Path) -> Result<Vec<u8>> {
     let mut module = transform::module_config().parse(&wasm)?;
 
     let (realloc, invoke, memory) = {
@@ -57,19 +60,22 @@ pub fn refine(wasm: Vec<u8>, js: &JS, exports: Vec<String>) -> Result<Vec<u8>> {
 
     let wasm = module.emit_wasm();
 
-    let codegen_cfg = CodegenConfig {
-        optimization_level: 3, // Aggressively optimize for speed.
-        shrink_level: 0,       // Don't optimize for size at the expense of performance.
-        debug_info: false,
-    };
+    // let codegen_cfg = CodegenConfig {
+    //     optimization_level: 3, // Aggressively optimize for speed.
+    //     shrink_level: 0,       // Don't optimize for size at the expense of performance.
+    //     debug_info: false,
+    // };
 
-    let mut module = Module::read(&wasm)
-        .map_err(|_| anyhow!("Unable to read wasm binary for wasm-opt optimizations"))?;
-    module.optimize(&codegen_cfg);
-    module
-        .run_optimization_passes(vec!["strip"], &codegen_cfg)
-        .map_err(|_| anyhow!("Running wasm-opt optimization passes failed"))?;
-    let wasm = module.write();
+    fs::write(output, wasm)?;
+    OptimizationOptions::new_opt_level_3().run(output, output)?;
+    let wasm = fs::read(output)?;
+    // let mut module = Module::read(&wasm)
+    //     .map_err(|_| anyhow!("Unable to read wasm binary for wasm-opt optimizations"))?;
+    // module.optimize(&codegen_cfg);
+    // module
+    //     .run_optimization_passes(vec!["strip"], &codegen_cfg)
+    //     .map_err(|_| anyhow!("Running wasm-opt optimization passes failed"))?;
+    // wasm = module.write();
 
     let mut module = transform::module_config().parse(&wasm)?;
     module.customs.add(SourceCodeSection::new(js)?);
