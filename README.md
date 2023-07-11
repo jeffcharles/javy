@@ -61,6 +61,8 @@ $ cargo build -p javy-core --target=wasm32-wasi -r
 $ cargo install --path crates/cli
 ```
 
+If you would like faster builds for the CLI, you can disable LTO (link time optimization) by setting the `CARGO_PROFILE_RELEASE_LTO` environment variable to `off`.
+
 ## Using Javy
 
 Pre-compiled binaries of the Javy CLI can be found on [the releases page](https://github.com/bytecodealliance/javy/releases).

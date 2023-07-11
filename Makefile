@@ -14,7 +14,7 @@ check-bench:
 	cargo check --package=javy-cli --release --benches
 
 cli: core
-	cargo build --package=javy-cli --release
+	CARGO_PROFILE_RELEASE_LTO=off cargo build --package=javy-cli --release
 
 core:
 	cargo build --package=javy-core --release --target=wasm32-wasi --features=$(CORE_FEATURES)
