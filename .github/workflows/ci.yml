@@ -66,6 +66,8 @@ jobs:
         run: make download-wasi-sdk
 
       - name: Tests
+        env:
+          CARGO_PROFILE_RELEASE_LTO: off
         run: make tests
 
       - name: Check benchmarks
