@@ -42,5 +42,8 @@ jobs:
           tar xvf /tmp/wasmtime.tar.xz --strip-components=1 -C /tmp/wasmtime
           echo "/tmp/wasmtime" >> $GITHUB_PATH
 
+      - name: Install mold
+        run: sudo apt-get install -y mold
+
       - name: WPT
         run: make test-wpt
