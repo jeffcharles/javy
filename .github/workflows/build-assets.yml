@@ -114,7 +114,7 @@ jobs:
           - name: windows
             os: windows-latest
             path: target\x86_64-pc-windows-msvc\release\javy.exe
-            asset_name: javy-x86_64-windows-${{ github.event.release.tag_name }}
+            asset_name: javy-x86_64-windows-${{ github.event.release.tag_name }}.exe
             shasum_cmd: sha256sum
             target: x86_64-pc-windows-msvc
 
