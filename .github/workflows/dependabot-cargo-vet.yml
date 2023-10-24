@@ -1,0 +1,32 @@
+# Runs cargo vet and cargo vet regenerate exemptions
+# FIXME add check if Dependabot is the actor
+name: Dependabot update cargo vet
+on:
+  push:
+    branches:
+      - "dependabot/cargo/**"
+
+jobs:
+  vet:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: cargo vet
+        continue-on-error: true
+
+      - run: cargo vet regenerate exemptions
+      
+      - name: commit and push
+        shell: bash
+        run: |
+          if ! git diff --exit-code; then
+            git config --global user.name 'github-actions[bot]'
+            git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+            git commit -am "[dependabot skip] Regenerate cargo vet"
+            git push
+          fi
