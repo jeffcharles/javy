@@ -10,3 +10,7 @@ rustflags = ["-C", "target-feature=+simd128"]
 # Ref: https://github.com/rust-lang/rust/pull/122268
 [target.x86_64-pc-windows-msvc]
 rustflags = ["-C", "target-feature=+crt-static"]
+
+# Need to explicitly link `advapi32` to get around a bug with Wasmtime 29.
+[target.x86_64-pc-windows-msvc.zstd-sys]
+rustc-link-lib = ["advapi32"]
