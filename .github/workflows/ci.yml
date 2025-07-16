@@ -90,6 +90,10 @@ jobs:
           target/release/javy emit-plugin -o crates/codegen/default_plugin.wasm
           CARGO_PROFILE_RELEASE_LTO=off cargo hack test --package=javy-codegen --release --each-feature -- --nocapture
 
+      - name: Test plugin processing
+        run: |
+          cargo test --package=javy-plugin-processing -- --nocapture
+
       - name: Check benchmarks
         run: CARGO_PROFILE_RELEASE_LTO=off cargo check --package=javy-cli --release --benches
 
@@ -102,6 +106,11 @@ jobs:
         run: |
           cargo fmt -- --check
           CARGO_PROFILE_RELEASE_LTO=off cargo hack clippy --package=javy-codegen --release --all-targets --each-feature -- -D warnings
+
+      - name: Lint plugin processing
+        run: |
+          cargo fmt --package=javy-plugin-processing -- --check
+          cargo clippy --package=javy-plugin-processing --all-targets -- -D warnings
 
       - name: WPT
         run: |
