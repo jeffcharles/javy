@@ -1,0 +1,47 @@
+name: Windows CI
+
+on:
+  pull_request:
+
+jobs:
+  compile_plugin:
+    name: Compile plugin
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build default plugin
+        run: make build-default-plugin
+
+      - name: Upload plugin
+        uses: actions/upload-artifact@v7
+        with:
+          name: windows-ci-plugin
+          path: target/wasm32-wasip1/release/plugin.wasm
+
+  compile_cli:
+    name: Compile CLI (${{ matrix.name }})
+    needs: compile_plugin
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        include:
+          - name: x86_64
+            target: x86_64-pc-windows-msvc
+          - name: arm64
+            target: aarch64-pc-windows-msvc
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install target
+        run: rustup target add ${{ matrix.target }}
+
+      - name: Download plugin
+        uses: actions/download-artifact@v8
+        with:
+          name: windows-ci-plugin
+          path: target/wasm32-wasip1/release/
+
+      - name: Build CLI
+        run: cargo build --release --target ${{ matrix.target }} --package javy-cli
